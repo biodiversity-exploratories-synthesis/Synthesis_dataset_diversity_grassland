@@ -525,6 +525,9 @@ tr[Trophic_level=="soilfungi.plant.pathogen"]
 tr[Species=="Urocystis_agropyri",Trophic_level:="plant.pathogen"]
 grl[Species=="Urocystis_agropyri",DataID:="18548"]
 grl[Species=="Urocystis_agropyri",Dataversion:="1.1.0"]
+      
+#reorder column names in grl
+setcolorder(grl,c("Plot_bexis","Plot","Species","value","type","Year","DataID","Dataversion"))
 
 #all good: save
 fwrite(grl,"N:/Exploratories/Data/GRASSLANDS/190715_EP_species_diversity_GRL.txt",row.names=F,quote=F,sep=";",na=NA)
