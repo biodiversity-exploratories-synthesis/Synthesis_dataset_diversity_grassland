@@ -15,6 +15,7 @@
 #11.add ants dataset (ID:23986)
 #12.add snails dataset (ID:23986)
 #13.change dataset IDs for birds and bats (old datasets have been archived)
+#14.change Trophic_level name for myriapods, from detritivore to myriapod.decomposer
 
 
 require(data.table)
@@ -451,6 +452,14 @@ grl2[DataID=="13146",DataID:="19849"]; grl2[DataID==19849,Dataversion:=NA]
 grl2[DataID=="13526",DataID:="19850"]; grl2[DataID==19850,Dataversion:=NA]
 ###################################################################################
 
+#14##change Trophic_level name for myriapods#######################################
+#from detritivore to myriapod.decomposer
+unique(grl2[Group_broad=="Myriapoda"]$Trophic_level)
+unique(grl2[Trophic_level=="detritivore"]$Group_broad)
+grl2[Trophic_level=="detritivore",Trophic_level:="myriapod.decomposer"]
+grl2[Group_broad=="Myriapoda" & Trophic_level=="secondary.consumer",Trophic_level:="myriapod.secondary.consumer"]
+###################################################################################
+
 
 ######################Lasts checks before saving table
 #remove potential forest plots
@@ -525,7 +534,7 @@ tr[Trophic_level=="soilfungi.plant.pathogen"]
 tr[Species=="Urocystis_agropyri",Trophic_level:="plant.pathogen"]
 grl[Species=="Urocystis_agropyri",DataID:="18548"]
 grl[Species=="Urocystis_agropyri",Dataversion:="1.1.0"]
-      
+
 #reorder column names in grl
 setcolorder(grl,c("Plot_bexis","Plot","Species","value","type","Year","DataID","Dataversion"))
 
