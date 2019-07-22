@@ -15,7 +15,7 @@
 #11.add ants dataset (ID:23986)
 #12.add snails dataset (ID:23986)
 #13.change dataset IDs for birds and bats (old datasets have been archived)
-#14.change Trophic_level name for myriapods, from detritivore to myriapod.decomposer
+#14.change Trophic_level name for myriapods (myriapod.decomposer, myriapod.secondary.consumer)
 
 
 require(data.table)
