@@ -525,7 +525,6 @@ for (i in sort(unique(grl2$DataID))){
 #check datasets 
 tt<-grl2[DataID==16908] #pollinator dataset, missing information are NAs
 tt<-grl2[DataID==18548] #plant.pathogen dataset, missing information are NAs
-tt<-grl2[DataID==24247] #plants, ok
 tt<-grl2[DataID==24567] #soilfungi dataset, cannot add zeros (dataset would be too large)
 tt<-grl2[DataID==24569] #soilfungi dataset, cannot add zeros (dataset would be too large)
 tt<-grl2[DataID==24571] #soilfungi dataset, cannot add zeros (dataset would be too large)
@@ -614,7 +613,7 @@ apply(grl2,2,function(x)sum(is.na(x))) #ok, only in functional group columns and
 #check if there are species with only zeros (that were maybe only in forests)
 sum(is.na(grl2$value))
 grl2$value<-as.numeric(as.character(grl2$value))
-grl2[,temp:=sum(value),by=Species]
+grl2[,temp:=sum(value,na.rm=T),by=Species]
 unique(grl2[temp==0]$Species) #one insect larvae and several protists -> after checks, safe to remove them
 grl2<-grl2[!temp==0]
 grl2$temp<-NULL
@@ -646,7 +645,7 @@ sum(is.na(grl))
 apply(grl,2,function(x)sum(is.na(x)))
 sum(is.na(tr))
 apply(tr,2,function(x)sum(is.na(x)))
-tr[is.na(Fun_group_broad)] #two myriapods
+tr[is.na(Fun_group_broad)] #two myriapods and one plant
 rm(toRemove)
 
 
