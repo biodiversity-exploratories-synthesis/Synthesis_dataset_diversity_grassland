@@ -1,2 +1,2 @@
-# 2019_grassland_diversity
-2019 grassland diversity dataset
+# Grassland_diversity_datasets
+Scripts related to the synthesis grassland diversity datasets
