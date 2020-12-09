@@ -16,7 +16,7 @@
 #12.add snails dataset (ID:23986)
 #13.change dataset IDs for birds and bats (old datasets have been archived)
 #14.change Trophic_level name for myriapods (myriapod.decomposer, myriapod.secondary.consumer)
-#15.update plant temporal dataset until 2018
+#15.update plant temporal dataset until 2020
 #16.add NAs for missing combinations of plot X year in the temporal datasets (plants, birds, bats) to avoid
 #mistakes when calculating richness
 #17.fix issue in bird dataset (2012 included twice and 2011 not included)
