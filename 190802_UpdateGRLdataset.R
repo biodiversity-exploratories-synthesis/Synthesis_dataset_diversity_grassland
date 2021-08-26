@@ -1,5 +1,10 @@
 ###########Update EP grassland datasets version 190802############
-#Changes from last version (DataID: 24606 and 21726)
+
+### This script creates Bexis dataset: 25626
+#Script by: Caterina Penone
+#Note: this script has a patch script to update data versions to BExIS2: 210826_UpdateGRL_VersionPatch.R
+
+#Changes from last version (DataID: 24606 and 21726):
 #1.add zeros when species*plot combination is missing for a given year (birds)
 #2.change "type" of foliar pathogens to presence-absence
 #3.change soil fungi plant pathogens to soilfungi.plant.pathogen (instead of plant.pathogen) 

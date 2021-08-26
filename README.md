@@ -15,6 +15,7 @@ This folder contains scripts related to the synthesis grassland diversity datase
   - 201111_UpdateGRLdataset.R -- Intermediate script
   - 201116_UpdateGRLdataset.R -- Intermediate script
   - 210112_UpdateGRLdataset.R -- Final script
+  - 210826_UpdateGRLdataset_VersionPatch.R -- Final script (updates version to BExIS2)
   
 --------------------------------------------------------------------------------------------------------------------------  
 **-->From the following Bexis datasets:**
@@ -28,3 +29,4 @@ This folder contains scripts related to the synthesis grassland diversity datase
 **Scripts**
   - 190715_UpdateGRLdataset.R -- Intermdiate script
   - 190802_UpdateGRLdataset.R -- Final script
+  - 210826_UpdateGRLdataset_VersionPatch.R -- Final script (updates version to BExIS2)

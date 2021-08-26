@@ -1,4 +1,10 @@
 ###########Update EP grassland datasets version 200205############
+
+### This script creates Bexis dataset: 27707
+#Script by: Caterina Penone
+#Note: this script has a patch script to update data versions to BExIS2: 210826_UpdateGRL_VersionPatch.R
+
+
 #Changes from version with DataID: 24606 and 21726
 #1.add zeros when species*plot combination is missing for a given year (birds)
 #2.change "type" of foliar pathogens to presence-absence
@@ -1113,7 +1119,7 @@ arthc<-dcast.data.table(arth,Species+type+DataID+Year+Group_broad+Group_fine+
 # 
 # Also note that there are entries with individuals identified not to species. Should we exclude them? 
 #   If ypou want to keep the zeros on order level, you would have to check if such a row needs to be added if the specs. 
-# are removed, becaused there could be cases where the only specimen of an order couldn´t be identified.
+# are removed, becaused there could be cases where the only specimen of an order couldn?t be identified.
 # 
 # 
 # add order column
