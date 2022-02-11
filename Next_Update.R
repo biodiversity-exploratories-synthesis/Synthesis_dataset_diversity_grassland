@@ -8,3 +8,4 @@
 # homogenise trophic level names with forest dataset (e.g. these, but check others too)
 tr[Group_broad == "bryophyte", Group_broad:= "Bryophyte"]
 tr[Group_broad == "bat", Group_broad:= "Bat"]
+#for Group_broad use Arthropod or use Araneae, Coleoptera... etc?
