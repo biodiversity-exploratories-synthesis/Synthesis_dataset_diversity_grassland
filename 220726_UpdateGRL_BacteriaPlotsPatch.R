@@ -5,6 +5,7 @@
 #This script is not a full update but a fix to two issues:
 #1. add two more plots for bacteria 2014 (after a mistake in script 210112_UpdateGRLdataset.R LINE:282)
 #2. add dung beetles 2014
+#3. fix an issue with protists 2011_2012, OTU names in the 3 regions were not comparable
 
 require(data.table)
 setwd("N:/")
@@ -149,7 +150,33 @@ grl2 <- rbind(grl2, dung, use.names=T)
 rm(dung)
 #######################################################################################
 
-#any other update?
+#2. fix issue with protists 2011_2012 and add NA for SEG16 in 2011, dataset 24426######
+#TODO the 11 dataset has one plot missing (SEG16 in 2011 for dataset 24426 ) --> add NAs here and in grl dataset
+
+#but the issue is actually in the 2012 dataset, nb sp * ns plots is wrong: doe to forest sp? (seems not)
+#the issue is that OTU names are not comparable across datasets - for a 3 regions united dataset I have something
+#Anna-Maria sent to me, with that one we have no taxonomy - either ignore overlaps or use the offline table
+#ignoring overlap is maybe safer as there is very low overlap
+#but say in methods that clustering is done separately per region
+# in this case just append dataset and OTU names to create unique OTUs
+#check of grassland and forests are comparable  - think about what to do in forest dataset
+#also, there are 6 datasets and OTU names are also not comparable there
+#The biodiversity results are commented in the publication Fiore-Donno  et al. 2016. 
+#Metacommunity analysis of amoeboid protists in grassland soils. Sci Rep, 6:19068. doi:10.1038/srep19068.
+temp <- unique(pro12[OTU=="OTU001"]) #otu1 does not correspond in all datasets
+
+unique(temp[OTU=="OTU001",.(OTU, SEQUENCE_ID_PLOT, DataID, FAMILY, SPECIES)])
+
+
+
+
+#######################################################################################
+
+
+
+
+
+
 
 ###########Save the diversity and characteristics tables separately ###################
 grl <- grl2[,.(Plot_bexis, Plot, Species, value, type, DataID, Year, Dataversion)]
