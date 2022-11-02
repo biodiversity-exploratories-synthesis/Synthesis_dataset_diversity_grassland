@@ -5,7 +5,7 @@
 #This script is not a full update but a fix to two issues:
 #1. add two more plots for bacteria 2014 (after a mistake in script 210112_UpdateGRLdataset.R LINE:282)
 #2. add dung beetles 2014
-#3. fix an issue with protists 2011_2012, OTU names in the 3 regions were not comparable
+#3. remove protists 2011_2012, OTU names in the 3 regions were not comparable, add one missing plot (SEG16 in 2011)
 
 require(data.table)
 setwd("N:/")
@@ -86,7 +86,7 @@ rm(bac); gc()
 #######################################################################################
 
 
-#2. add dung beetles species###########################################################
+#2. add dung beetles species ##########################################################
 # 21207: Dungwebs Species List 2014 & 2015 (Invertebrates, Scarabaeoidea, Dung Beetles) - downloaded 27/06/18
 dung <- fread("Exploratories/Data/GRASSLANDS/TEXTfiles/190319_Update/21207.txt")
 dung <- dung[!grepl("W", dung$EP)] #remove forest data
@@ -150,32 +150,38 @@ grl2 <- rbind(grl2, dung, use.names=T)
 rm(dung)
 #######################################################################################
 
-#2. fix issue with protists 2011_2012 and add NA for SEG16 in 2011, dataset 24426######
-#TODO the 11 dataset has one plot missing (SEG16 in 2011 for dataset 24426 ) --> add NAs here and in grl dataset
-
-#but the issue is actually in the 2012 dataset, nb sp * ns plots is wrong: doe to forest sp? (seems not)
-#the issue is that OTU names are not comparable across datasets - for a 3 regions united dataset I have something
-#Anna-Maria sent to me, with that one we have no taxonomy - either ignore overlaps or use the offline table
-#ignoring overlap is maybe safer as there is very low overlap
-#but say in methods that clustering is done separately per region
-# in this case just append dataset and OTU names to create unique OTUs
-#check of grassland and forests are comparable  - think about what to do in forest dataset
-#also, there are 6 datasets and OTU names are also not comparable there
-#The biodiversity results are commented in the publication Fiore-Donno  et al. 2016. 
-#Metacommunity analysis of amoeboid protists in grassland soils. Sci Rep, 6:19068. doi:10.1038/srep19068.
-temp <- unique(pro12[OTU=="OTU001"]) #otu1 does not correspond in all datasets
-
-unique(temp[OTU=="OTU001",.(OTU, SEQUENCE_ID_PLOT, DataID, FAMILY, SPECIES)])
 
 
+#3. fix issue with protists 2011_2012 and add NA for SEG16 in 2011, dataset 24426 #####
+#The 2011_2012 dataset of ""mainlybacterivore.protist" has two issues:
+# 1-regions are treated separately in the pipeline
+# 2- Acanthoamoeba are anecdotical and Myxomycetes are a group hard to classify (can switch from amoeba to flagellates)
+# For those reasons, in particular issue 1, with Anna-Maria Fiore-Donno we decided to remove them from the dataset
+
+unique(grl2$Year)
+unique(grl2[Year=="2011_2012"]$Trophic_level) #safe to remove based on year
+#which datasets ID to remove from metadata?
+unique(grl2[Year=="2011_2012"]$DataID) #18166 18206 18226 18187 18208 18207
+
+grl2 <- grl2[!Year=="2011_2012"]
+grl2[Trophic_level=="mainlybacterivore.protist"] #ok
 
 
+#Add missing plot: the 2011 dataset has one plot missing (SEG16 in 2011 for dataset 24426 )
+length(unique(grl2[Group_broad=="Protists" & Year=="2011"]$Plot)) #149
+pro <- grl2[Group_broad=="Protists"]
+length(unique(pro[Year=="2011"]$Species))
+length(unique(pro[Year=="2017"]$Species))
+proadd <- pro[Year=="2011" & Plot=="SEG17"] #use another plot as model, ok this as 2004 species
+proadd$Plot_bexis <- proadd$Plot <- "SEG16"
+proadd$value <- NA
+
+#add to main dataset
+grl2 <- rbindlist(list(grl2, proadd))
+length(unique(grl2[Group_broad=="Protists" & Year=="2011"]$Plot)) #150
+
+rm(pro, proadd); gc()
 #######################################################################################
-
-
-
-
-
 
 
 ###########Save the diversity and characteristics tables separately ###################
@@ -187,10 +193,12 @@ length(unique(grl2$Species))
 tr <- unique(tr)
 sum(is.na(grl))
 apply(grl,2,function(x)sum(is.na(x)))
+unique(grl2[is.na(Dataversion)]$Trophic_level) #NAs in dataversion are normal (birds and bats)
 sum(is.na(tr))
 apply(tr,2,function(x)sum(is.na(x)))
 tr[is.na(Fun_group_broad)] #two myriapods and one plant
-
+unique(tr[Trophic_level=="autotroph"]$Fun_group_broad) #ok to keep NA, it's unkown anyway
+unique(tr[Trophic_level=="decomposer.myriapod"]$Fun_group_broad) #ok to keep NA
 
 summary(factor(tr$Trophic_level))
 
@@ -198,6 +206,6 @@ summary(factor(tr$Trophic_level))
 setcolorder(grl,c("Plot_bexis","Plot","Species","value","type","Year","DataID","Dataversion"))
 
 #all good: save
-fwrite(grl,"Exploratories/Data/GRASSLANDS/220727_EP_species_diversity_GRL_Patch22.txt",row.names=F,quote=F,sep=";",na=NA)
-fwrite(tr,"Exploratories/Data/GRASSLANDS/220727_EP_species_info_GRL_patch22.txt",row.names=F,quote=F,sep=";",na=NA)
+fwrite(grl,"Exploratories/Data/GRASSLANDS/221102_EP_species_diversity_GRL_Patch22.txt",row.names=F,quote=F,sep=";",na=NA)
+fwrite(tr,"Exploratories/Data/GRASSLANDS/221102_EP_species_info_GRL_patch22.txt",row.names=F,quote=F,sep=";",na=NA)
 
