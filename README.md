@@ -11,10 +11,10 @@ This folder contains scripts related to the synthesis grassland diversity datase
 - 31435: Assembled species information from grassland EPs (2008-2020) for multidiversity synthesis - January 2023
 
 **Scripts**
-  - 220726_UpdateGRL_BacteriaPlotsPatch.R
-This script is not a full update but a fix:
-#1. add two more plots for bacteria 2014 (after a mistake in script 210112_UpdateGRLdataset.R LINE:282)
-#2. add dung beetles 2014
+  - 220726_UpdateGRL_BacteriaPlotsPatch.R: 
+This script is not a full update but a fix to:
+#1. add two more plots for bacteria 2014 (after a mistake in script 210112_UpdateGRLdataset.R LINE:282); 
+#2. add dung beetles 2014; and 
 #3. remove protists 2011_2012, OTU names in the 3 regions were not comparable, add one missing plot (SEG16 in 2011)
 
 -------------------------------------------------------------------------------------------------------------------------- 
