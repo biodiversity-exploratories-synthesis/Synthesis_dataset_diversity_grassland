@@ -71,3 +71,9 @@ sort(names(amf))
 unique(grl2[Trophic_level=="symbiont.soilfungi", .(Group_broad, Group_fine, Fun_group_broad, Fun_group_fine)]) #check
 grl2 <- grl2[!Fun_group_fine=="AMF"]
 grl2 <- rbindlist(list(grl2, amf), use.names = T)
+
+###Birds 2018 --> change dataset ID and version
+#From Cornelia: to make the dataset 25306 "Bird survey and trait data on all grassland and forest EPs 2018" public, 
+#we had to upload the data in a new dataset. This dataset (31521) contains abbreviations for the observer. All other 
+#data is identical. Dataset 25306 was deleted. I updated the link section of your dataset - I deleted the link to 25306 
+#and added a link to  31521 in your synthesis dataset (27706, 27707, 31206) and dataset 31368."
