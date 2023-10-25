@@ -24,6 +24,109 @@ tr[Group_fine == "Birds", Group_fine:= "Bird"]
 #check also all Fun_group_broad and fine (cf forest script 210217_ForestDivDataUPDATE.R)
 #to be discussed with BExIS how to do proper taxonomic columns
 
+############## Add oomicota ##########################
+#########Based on this code from the forest dataset
+#############OOMYCOTA
+# Read diversity data and check dimension
+pro17 <- fread("Exploratories/Data/FORESTS/Update2021/25767_2_data.txt")
+length(unique(pro17$OTU)) * length(unique(pro17$EP_PlotID))
+
+pro11 <- fread("Exploratories/Data/FORESTS/Update2021/25766_2_data.txt")
+length(unique(pro11$OTU)) * length(unique(pro11$EP_PlotID))
+
+# Read species information / traits
+proinf <- fread("Exploratories/Data/FORESTS/Update2021/25768_2_data.txt")
+
+# Change hew2 to hew51 in 2017
+sort(unique(pro17$EP_PlotID))
+pro17[EP_PlotID=="HEW2", EP_PlotID:="HEW51"]
+
+# Add year, DataID and merge
+pro17$My_PlotID <- NULL; pro11$MyPlotID <- NULL
+pro17$DataID <- 25767; pro11$DataID <- 25766
+pro17$Year <- 2017; pro11$Year <- 2011
+
+protoo <- rbindlist((list(pro11,pro17)))
+rm(pro11, pro17)
+
+# Remove grassland plots
+length(unique(protoo$EP_PlotID))
+protoo <- protoo[!grepl("G", protoo$EP_PlotID)] 
+length(unique(protoo[Year=="2011"]$Plot_bexis)) #150
+length(unique(protoo[Year=="2017"]$Plot_bexis)) #150
+
+#### Prepare species info table
+# Add Group broad and Group fine
+proinf$Group_broad <- "Protist.oomycota"
+unique(proinf$Order)
+setnames(proinf, "Order", "Group_fine")
+
+# Create trophic level information
+table(proinf[,.(Lifestyle, Substrate)])
+proinf$Trophic_level <- "plantparasite.protist"
+proinf[Lifestyle=="saprotroph", Trophic_level:="decomposer.protist"]
+proinf[(!Lifestyle %in% "saprotroph" & Substrate == "Metazoa"),
+       Trophic_level:="animalparasite.protist"]
+proinf[(!Lifestyle %in% "saprotroph" & Substrate == "substrate_undetermined"),
+       Trophic_level:="unknown.protist"]
+
+table(proinf[,.(Lifestyle, Trophic_level)]) #check ok
+table(proinf[,.(Substrate, Trophic_level)]) #check ok
+
+# Functional group broad and fine
+proinf$Fun_group_broad <- proinf$Fun_group_fine <- proinf$Trophic_level
+proinf[(Lifestyle == "obligate_biotroph" & Trophic_level == "plantparasite.protist"),
+       Fun_group_fine:="plant.obligate.biotroph.protist"]
+
+proinf[(Lifestyle == "hemibiotroph" & Trophic_level == "plantparasite.protist"),
+       Fun_group_fine:="plant.hemibiotroph.protist"]
+
+proinf[(Lifestyle == "obligate_biotroph" & Trophic_level == "animalparasite.protist"),
+       Fun_group_fine:="animal.obligate.biotroph.protist"]
+
+proinf[(Lifestyle == "hemibiotroph" & Trophic_level == "animalparasite.protist"),
+       Fun_group_fine:="animal.hemibiotroph.protist"]
+
+proinf[(Trophic_level == "decomposer.protist"),
+       Fun_group_fine:="saprotroph.protist"]
+
+table(proinf[,.(Fun_group_fine, Trophic_level)]) #check ok
+
+# Remove columns not needed
+proinf$Genus <- proinf$Lifestyle <- proinf$Substrate <- NULL
+
+## Change names
+setnames(proinf, "OTUs", "Species")
+setnames(protoo, c("EP_PlotID", "OTU", "abundance"), c("Plot_bexis", "Species", "value"))
+
+# Merge diversity and species info
+protoo <- merge(protoo, proinf, by = "Species")
+
+# Add group name to otu ID (to avoid confusions with fungi or bacteria)
+protoo[,Species:=paste(Species,"_protist_OOMYCOTA",sep="")]
+
+# Add new columns: type, plot zero
+setdiff(names(frs2), names(protoo))
+setdiff(names(protoo), names(frs2))
+protoo$type <- "OTU_number"
+protoo <- data.table(BEplotZeros(protoo, "Plot_bexis", plotnam = "Plot"))
+
+# Checks
+apply(prot, 2, function(x)sum(is.na(x)))
+apply(protoo, 2, function(x)sum(is.na(x)))
+
+length(unique(prot$Plot)) #151
+length(unique(protoo$Plot)) #151
+
+length(unique(prot$Species)) #2101
+length(unique(protoo$Species)) #1148
+
+150 * 2101 * 2 #630300
+150 * 1148 * 2 #344400
+
+# Checks passed, merge with main dataset
+frs2 <- rbindlist(list(frs2, prot, protoo),use.names = T)
+rm(prot, protoo, proinf); gc()
 
 
 #############Replace symbionts with proper AMF datasets ##########################
